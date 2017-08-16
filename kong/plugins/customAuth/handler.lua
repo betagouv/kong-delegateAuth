@@ -42,7 +42,7 @@ function plugin:exit_unauthorized(reason)
   if reason == nil then reason = "" end
 
   ngx.status = ngx.HTTP_UNAUTHORIZED
-  ngx.say('{"error":{"status":"unauthorized","reason":"' .. reason ..'"}}')
+  ngx.say(reason)
   ngx.exit(ngx.HTTP_UNAUTHORIZED)
 end
 
