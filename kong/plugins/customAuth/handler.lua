@@ -6,6 +6,10 @@ function plugin:new()
   plugin.super.new(self, "customAuth")
 end
 
+function plugin:init_worker(config)
+  plugin.super.init_worker(self)
+end
+
 function plugin:access(conf)
   plugin.super.access(self)
 
@@ -42,6 +46,8 @@ function plugin:exit_unauthorized(reason)
   if reason == nil then reason = "" end
 
   ngx.status = ngx.HTTP_UNAUTHORIZED
+
+  ngx.header["Content-Type"] = "application/json"
   ngx.say(reason)
   ngx.exit(ngx.HTTP_UNAUTHORIZED)
 end
