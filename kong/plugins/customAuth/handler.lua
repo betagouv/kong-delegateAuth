@@ -30,6 +30,7 @@ function plugin:access(conf)
       plugin:exit_unauthorized(err)
     else
       if res.status == 200 then
+        ngx.log(ngx.INFO, res.body)
         return
       else
         plugin:exit_unauthorized(res.body)

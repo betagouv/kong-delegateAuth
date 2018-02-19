@@ -1,5 +1,5 @@
 package = "kong-plugin-custom-auth"
-version = "0.1.0-1"
+version = "0.2.0-1"
 supported_platforms = {"linux", "macosx"}
 source = {
   url = "git://github.com/Mashape/kong_plugin",
