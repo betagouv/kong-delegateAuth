@@ -16,14 +16,17 @@ function plugin:access(conf)
 
   local httpc = http:new()
 
-  if has_value(conf.whitelisted_paths, ngx.var.request_uri) then
+  if has_value(conf.skipped_paths, ngx.var.request_uri) then
     return
   else
+    local headers = ngx.req.get_headers()
+    headers['host'] = nil
     local res, err = httpc:request_uri(plugin:authorize_url(conf), {
       method = "GET",
       path = conf.authorize_path,
-      headers = ngx.req.get_headers()
+      headers =  headers
     })
+    ngx.log(ngx.ERR, require 'pl.pretty'.dump(headers))
 
     if not res then
       ngx.log(ngx.INFO, err)

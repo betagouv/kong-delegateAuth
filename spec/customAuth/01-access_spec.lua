@@ -8,7 +8,7 @@ describe("custom-auth: customAuth (access)", function()
     local apiOK = assert(helpers.dao.apis:insert {
         name = "api-OK",
         hosts = { "ok.com" },
-        upstream_url = "http://mockbin.com",
+        upstream_url = "http://mockbin.org",
     })
 
     assert(helpers.dao.plugins:insert {
@@ -24,7 +24,7 @@ describe("custom-auth: customAuth (access)", function()
     local apiNOK = assert(helpers.dao.apis:insert {
         name = "api-NOK",
         hosts = { "nok.com" },
-        upstream_url = "http://mockbin.com",
+        upstream_url = "http://httpbin.org",
     })
 
     local config = {}
