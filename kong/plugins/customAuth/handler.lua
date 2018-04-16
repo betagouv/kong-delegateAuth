@@ -26,14 +26,13 @@ function plugin:access(conf)
       path = conf.authorize_path,
       headers =  headers
     })
-    ngx.log(ngx.ERR, require 'pl.pretty'.dump(headers))
 
     if not res then
-      ngx.log(ngx.INFO, err)
+      ngx.log(ngx.ERR, require 'pl.pretty'.dump(err))
       plugin:exit_unauthorized(err)
     else
       if res.status == 200 then
-        ngx.log(ngx.INFO, res.body)
+        ngx.log(ngx.ERR, require 'pl.pretty'.dump(res.body))
         return
       else
         plugin:exit_unauthorized(res.body)
