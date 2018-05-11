@@ -1,6 +1,20 @@
 local http = require "resty.http"
+local cjson = require "cjson"
+local table = require "table"
 
 local plugin = require("kong.plugins.base_plugin"):extend()
+
+function strjoin(delimiter, list)
+   local len = table.getn(list)
+   if len == 0 then
+      return ""
+   end
+   local string = list[1]
+   for i = 2, len do
+      string = string .. delimiter .. list[i]
+   end
+   return string
+end
 
 function plugin:new()
   plugin.super.new(self, "customAuth")
@@ -32,6 +46,10 @@ function plugin:access(conf)
       plugin:exit_unauthorized(err)
     else
       if res.status == 200 then
+        local body = cjson.decode(res.body)
+        ngx.req.set_header('X-User-Id', body['_id'])
+        ngx.req.set_header('X-User-Name', body['name'])
+        ngx.req.set_header('X-User-Scopes', strjoin(' ', body['scopes']))
         ngx.log(ngx.ERR, require 'pl.pretty'.dump(res.body))
         return
       else
