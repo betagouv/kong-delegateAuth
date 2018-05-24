@@ -2,6 +2,12 @@
 
 This plugin filters requests with a given API key authorization server
 
+## Pré-requis
+
+- Lua
+- luarocks :  https://github.com/luarocks/luarocks
+- kong : https://getkong.org/
+
 ## Installation
 1. Install the rock
 ```
@@ -21,9 +27,15 @@ curl -XPOST http://localhost:8001/apis/api-particulier/plugins/ \
 
 ## Test
 First install all dependencies (not tested)
+- For debian users :
 ```
 ./spec/install.sh
 ```
+
+- For mac user : ```brew install openresty/brew/openresty```
+
+`luarocks install busted`
+
 
 Then run the tests (it needs to have an authorization server started listening to port 7000)
 ```
