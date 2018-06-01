@@ -1,5 +1,27 @@
 local helpers = require "spec.helpers"
 local handler = require "kong.plugins.customAuth.handler"
+local say = require("say")
+local cjson = require "cjson"
+
+local function has_property(state, arguments)
+  local has_key = false
+
+  if not type(arguments[1]) == "table" or #arguments ~= 2 then
+    return false
+  end
+
+  for key, value in pairs(arguments[1]) do
+    if key == arguments[2] then
+      has_key = true
+    end
+  end
+
+  return has_key
+end
+
+say:set("assertion.has_property.positive", "Expected %s \nto have property: %s")
+say:set("assertion.has_property.negative", "Expected %s \nto not have property: %s")
+assert:register("assertion", "has_property", has_property, "assertion.has_property.positive", "assertion.has_property.negative")
 
 describe("custom-auth: customAuth (access)", function()
   local client
@@ -16,8 +38,8 @@ describe("custom-auth: customAuth (access)", function()
       name = "customAuth",
       config = {
         authorize_scheme = "http",
-        authorize_host = "httpbin.org",
-        authorize_path = "/ip"
+        authorize_host = "localhost:7000",
+        authorize_path = "/api/auth/authorize"
       }
     })
 
@@ -72,11 +94,57 @@ describe("custom-auth: customAuth (access)", function()
         method = "GET",
         path = "/request",
         headers = {
-          host = "ok.com"
+          host = "ok.com",
+          ['x-api-key'] = 'test-token'
         }
       })
 
       assert.response(r).has.status(200)
+    end)
+
+    it("should set X-User-Id header", function()
+      local r = assert(client:send {
+        method = "GET",
+        path = "/request",
+        headers = {
+          host = "ok.com",
+          ['x-api-key'] = 'test-token'
+        }
+      })
+
+      local body = cjson.decode(r.body_reader())
+
+      assert.has_property(body['headers'], 'x-user-id')
+    end)
+
+    it("should set X-User-Name header", function()
+      local r = assert(client:send {
+        method = "GET",
+        path = "/request",
+        headers = {
+          host = "ok.com",
+          ['x-api-key'] = 'test-token'
+        }
+      })
+
+      local body = cjson.decode(r.body_reader())
+
+      assert.has_property(body['headers'], 'x-user-name')
+    end)
+
+    it("should set X-User-Scopes header", function()
+      local r = assert(client:send {
+        method = "GET",
+        path = "/request",
+        headers = {
+          host = "ok.com",
+          ['x-api-key'] = 'test-token'
+        }
+      })
+
+      local body = cjson.decode(r.body_reader())
+
+      assert.has_property(body['headers'], 'x-user-scopes')
     end)
   end)
 
