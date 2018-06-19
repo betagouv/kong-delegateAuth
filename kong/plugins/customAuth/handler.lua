@@ -9,11 +9,7 @@ function strjoin(delimiter, list)
    if len == 0 then
       return ""
    end
-   local string = list[1]
-   for i = 2, len do
-      string = string .. delimiter .. list[i]
-   end
-   return string
+   return table.concat(list, delimiter)
 end
 
 function plugin:new()
