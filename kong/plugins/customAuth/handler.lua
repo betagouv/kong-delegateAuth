@@ -38,7 +38,7 @@ function plugin:access(conf)
     local res, err = httpc:request_uri(plugin:authorize_url(conf), {
       method = "GET",
       path = conf.authorize_path,
-      headers =  headers
+      headers = headers
     })
 
     if not res then
