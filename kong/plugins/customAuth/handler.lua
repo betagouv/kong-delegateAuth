@@ -44,7 +44,10 @@ function plugin:access(conf)
   end
 
   if res.status == 200 then
-    ngx.log(ngx.ERR, require 'pl.pretty'.dump(res.body))
+    local body = cjson.decode(res.body)
+    ngx.req.set_header('X-User-Id', body['_id'])
+    ngx.req.set_header('X-User-Name', body['name'])
+    ngx.req.set_header('X-User-Scopes', strjoin(' ', body['scopes']))
     return
   end
 
