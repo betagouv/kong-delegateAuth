@@ -42,7 +42,6 @@ function plugin:access(conf)
     })
 
     if not res then
-      ngx.log(ngx.ERR, require 'pl.pretty'.dump(err))
       plugin:exit_unauthorized(err)
     else
       if res.status == 200 then
@@ -50,7 +49,6 @@ function plugin:access(conf)
         ngx.req.set_header('X-User-Id', body['_id'])
         ngx.req.set_header('X-User-Name', body['name'])
         ngx.req.set_header('X-User-Scopes', strjoin(' ', body['scopes']))
-        ngx.log(ngx.ERR, require 'pl.pretty'.dump(res.body))
         return
       else
         plugin:exit_unauthorized(res.body)
