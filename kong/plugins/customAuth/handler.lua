@@ -28,29 +28,27 @@ function plugin:access(conf)
 
   if has_value(conf.skipped_paths, ngx.var.request_uri) then
     return
-  else
-    local headers = ngx.req.get_headers()
-    headers['host'] = nil
-    local res, err = httpc:request_uri(plugin:authorize_url(conf), {
-      method = "GET",
-      path = conf.authorize_path,
-      headers = headers
-    })
-
-    if not res then
-      plugin:exit_unauthorized(err)
-    else
-      if res.status == 200 then
-        local body = cjson.decode(res.body)
-        ngx.req.set_header('X-User-Id', body['_id'])
-        ngx.req.set_header('X-User-Name', body['name'])
-        ngx.req.set_header('X-User-Scopes', strjoin(' ', body['scopes']))
-        return
-      else
-        plugin:exit_unauthorized(res.body)
-      end
-    end
   end
+
+  local headers = ngx.req.get_headers()
+  headers['host'] = nil
+  local res, err = httpc:request_uri(plugin:authorize_url(conf), {
+    method = "GET",
+    path = conf.authorize_path,
+    headers = headers
+  })
+
+  if not res then
+    ngx.log(ngx.ERR, require 'pl.pretty'.dump(err))
+    return plugin:exit_unauthorized(err)
+  end
+
+  if res.status == 200 then
+    ngx.log(ngx.ERR, require 'pl.pretty'.dump(res.body))
+    return
+  end
+
+  plugin:exit_unauthorized(res.body)
 end
 
 function plugin:authorize_url(conf)
