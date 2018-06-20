@@ -39,7 +39,6 @@ function plugin:access(conf)
   })
 
   if not res then
-    ngx.log(ngx.ERR, require 'pl.pretty'.dump(err))
     return plugin:exit_unauthorized(err)
   end
 
