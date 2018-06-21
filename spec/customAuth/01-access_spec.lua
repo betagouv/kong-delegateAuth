@@ -19,6 +19,8 @@ local function has_property(state, arguments)
   return has_key
 end
 
+local api_key = os.getenv("AUTH_API_KEY")
+
 say:set("assertion.has_property.positive", "Expected %s \nto have property: %s")
 say:set("assertion.has_property.negative", "Expected %s \nto not have property: %s")
 assert:register("assertion", "has_property", has_property, "assertion.has_property.positive", "assertion.has_property.negative")
@@ -95,7 +97,21 @@ describe("custom-auth: customAuth (access)", function()
         path = "/request",
         headers = {
           host = "ok.com",
-          ['x-api-key'] = 'test-token'
+          ['x-api-key'] = api_key
+        }
+      })
+
+      assert.response(r).has.status(200)
+    end)
+
+    it("should authorize on a 200 response from authorize service even when requesting XML", function()
+      local r = assert(client:send {
+        method = "GET",
+        path = "/request",
+        headers = {
+          host = "ok.com",
+          ['x-api-key'] = api_key,
+          ['Accept'] = "application/xml"
         }
       })
 
@@ -108,7 +124,7 @@ describe("custom-auth: customAuth (access)", function()
         path = "/request",
         headers = {
           host = "ok.com",
-          ['x-api-key'] = 'test-token'
+          ['x-api-key'] = api_key
         }
       })
 
@@ -123,7 +139,7 @@ describe("custom-auth: customAuth (access)", function()
         path = "/request",
         headers = {
           host = "ok.com",
-          ['x-api-key'] = 'test-token'
+          ['x-api-key'] = api_key
         }
       })
 
@@ -138,7 +154,7 @@ describe("custom-auth: customAuth (access)", function()
         path = "/request",
         headers = {
           host = "ok.com",
-          ['x-api-key'] = 'test-token'
+          ['x-api-key'] = api_key
         }
       })
 
