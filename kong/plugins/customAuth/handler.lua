@@ -26,7 +26,7 @@ function plugin:access(conf)
 
   local httpc = http:new()
 
-  if has_value(conf.skipped_paths, ngx.var.request_uri) then
+  if has_value(conf.skipped_paths, ngx.var.uri) then
     return
   end
 
