@@ -8,22 +8,19 @@ This plugin filters requests with a given API key authorization server
 - luarocks :  https://github.com/luarocks/luarocks
 - kong : https://getkong.org/
 
-## Installation
-1. Install the rock
-```
-luarocks make
-```
-2. Add plugin in kong.conf custom plugins
+## Development
 
-3. Connect the plugin with an API
+For code change on your host to take effect in your vagrant, run the following commands:
+```bash
+vagrant ssh gateway
+sudo su -
+cd /root/kong-delegateAuth-master/
+luarocks make
+service kong restart
 ```
-curl -XPOST http://localhost:8001/apis/api-particulier/plugins/ \
-  -d "name=customAuth" \
-  -d "config.authorize_scheme=http" \
-  -d "config.authorize_host=localhost:{{ particulier_auth_api_port }}" \
-  -d "config.authorize_path=/api/auth/authorize" \
-  -d "config.whitelisted_paths=/api/ping,/api/impots/ping,/api/caf/ping,/api/swagger.yml"
-```
+
+
+Logs can be found at `/usr/local/kong/logs/`.
 
 ## Test
 
@@ -32,18 +29,25 @@ curl -XPOST http://localhost:8001/apis/api-particulier/plugins/ \
 In your vagrant, install busted:
 
 ```bash
+vagrant ssh gateway
+sudo su -
+cd /root/kong-delegateAuth-master/
 luarocks install busted
 ```
 
 Then create the test database:
 
 ```bash
-su - postgres
+vagrant ssh gateway
+sudo su - postgres
 psql -c "CREATE DATABASE kong_tests OWNER kong"
 ```
 
 ### Run the tests
 
 ```bash
+vagrant ssh gateway
+sudo su -
+cd /root/kong-delegateAuth-master/
 PATH=$PATH:/usr/local/openresty/bin/ AUTH_API_KEY=<YOUR_API_KEY_HERE> ./bin/busted
 ```
