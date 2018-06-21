@@ -26,18 +26,24 @@ curl -XPOST http://localhost:8001/apis/api-particulier/plugins/ \
 ```
 
 ## Test
-First install all dependencies (not tested)
-- For debian users :
+
+### Dependencies
+
+In your vagrant, install busted:
+
+```bash
+luarocks install busted
 ```
-./spec/install.sh
+
+Then create the test database:
+
+```bash
+su - postgres
+psql -c "CREATE DATABASE kong_tests OWNER kong"
 ```
 
-- For mac user : ```brew install openresty/brew/openresty```
+### Run the tests
 
-`luarocks install busted`
-
-
-Then run the tests (it needs to have an authorization server started listening to port 7000)
-```
-./bin/busted
+```bash
+PATH=$PATH:/usr/local/openresty/bin/ AUTH_API_KEY=<YOUR_API_KEY_HERE> ./bin/busted
 ```

@@ -32,6 +32,7 @@ function plugin:access(conf)
 
   local headers = ngx.req.get_headers()
   headers['host'] = nil
+  headers['accept'] = "application/json"
   local res, err = httpc:request_uri(plugin:authorize_url(conf), {
     method = "GET",
     path = conf.authorize_path,
