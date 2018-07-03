@@ -188,5 +188,17 @@ describe("custom-auth: customAuth (access)", function()
 
       assert.response(r).has.status(200)
     end)
+
+    it("You shall pass if in skipped_paths with query params", function()
+      local r = assert(client:send {
+        method = "GET",
+        path = "/ip?test=test",
+        headers = {
+          host = "nok.com"
+        }
+      })
+
+      assert.response(r).has.status(200)
+    end)
   end)
 end)
